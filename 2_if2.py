@@ -20,7 +20,24 @@ def main():
     Эта функция вызывается автоматически при запуске скрипта в консоли
     В ней надо заменить pass на ваш код
     """
-    pass
+     
+    str1 = input("Введите первую строку: ")
+    str2 = input("Введите вторую строку: ")
     
+    if type(str1) != str and type(str2)!= str :
+        return 0
+    if str1 == str2 :
+        return 1
+    if len(str1) > len(str2) :
+        return 2
+    if str1 != str2 and str2 == "learn" :
+        return 3
+    else :
+        return "Нет подходящего ответа"
+    
+            
 if __name__ == "__main__":
-    main()
+    while True:
+        print(f'Результат: {main()}')
+
+    

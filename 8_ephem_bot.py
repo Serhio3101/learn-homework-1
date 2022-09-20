@@ -12,42 +12,48 @@
   бота отвечать, в каком созвездии сегодня находится планета.
 
 """
-import logging
-
+import logging, settings
+from datetime import date
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import ephem
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
 
 
-PROXY = {
-    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-    'urllib3_proxy_kwargs': {
-        'username': 'learn',
-        'password': 'python'
-    }
-}
-
-
 def greet_user(update, context):
-    text = 'Вызван /start'
+    text = 'Привет! Будь добр введи команду /planet и любое название планеты на английском'
     print(text)
     update.message.reply_text(text)
 
 
-def talk_to_me(update, context):
-    user_text = update.message.text
-    print(user_text)
-    update.message.reply_text(text)
+def planet_user(update, context):
+    user_says = update.message.text
+    planet = user_says.split()
+    top_planet = getattr(ephem,planet[1].capitalize())()
+    print(top_planet)
+    mars = ephem.Mars(date.today())
+    print(mars)
+    b = ephem.constellation(mars)
+    print (b)
+    a = ephem.constellation(top_planet)
+    print (a)
+    update.message.reply_text(a)
 
+
+
+
+    
 
 def main():
-    mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
-
+    mybot = Updater(settings.APY_KEY, use_context=True)
+    
     dp = mybot.dispatcher
+    print('https://t.me/planet_ephem1_bot')
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
+    dp.add_handler(CommandHandler("planet", planet_user))
+    
 
     mybot.start_polling()
     mybot.idle()
